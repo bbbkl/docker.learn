@@ -1,0 +1,80 @@
+services:
+  gitlab:
+    hostname: gitlab.dockerbuch.info
+    image: gitlab/gitlab-ce:latest
+    environment:
+      GITLAB_ROOT_PASSWORD: GanzGeheimGanz
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'https://gitlab.dockerbuch.info/'
+        nginx['listen_port'] = 80
+        nginx['listen_https'] = false
+        nginx['proxy_set_headers'] = {
+          "X-Forwarded-Proto" => "https",
+          "X-Forwarded-Ssl" => "on"
+        }
+        postgresql['enable'] = false
+        gitlab_rails['db_host'] = 'postgresql'
+        gitlab_rails['db_port'] = '5432'
+        gitlab_rails['db_username'] = 'gitlab'
+        gitlab_rails['db_password'] = 'ief6baehohQu'
+        gitlab_rails['db_database'] = 'gitlab_prod'
+        gitlab_rails['db_adapter'] = 'postgresql'
+        gitlab_rails['db_encoding'] = 'utf8'
+        redis['enable'] = false
+        gitlab_rails['redis_host'] = 'redis'
+        gitlab_rails['redis_port'] = '6379'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+        gitlab_rails['smtp_enable'] = true
+        gitlab_rails['smtp_openssl_verify_mode'] = 'none'
+        gitlab_rails['smtp_address'] = 'exim'
+        gitlab_rails['smtp_port'] = 25
+        gitlab_rails['gitlab_email_from'] = 'gl@dockerbuch.info'
+        registry_external_url 'https://registry.dockerbuch.info'
+        registry['registry_http_addr'] = "0.0.0.0:5000"
+        registry_nginx['enable'] = false
+    ports:
+      - "2222:22"
+    restart: always
+    volumes:
+      - config:/etc/gitlab
+      - logs:/var/log/gitlab
+      - data:/var/opt/gitlab
+    networks:
+      - web
+      - default
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.gitlab.rule=Host(`gitlab.dockerbuch.info`)
+      - traefik.http.routers.gitlab.tls=true
+      - traefik.http.routers.gitlab.tls.certresolver=lets-encrypt
+      - traefik.http.services.gitlab.loadbalancer.server.port=80
+      - traefik.http.routers.gitlab.service=gitlab
+      - traefik.http.routers.reg.rule=Host(`registry.dockerbuch.info`)
+      - traefik.http.routers.reg.tls=true
+      - traefik.http.routers.reg.tls.certresolver=lets-encrypt
+      - traefik.http.routers.reg.service=gl-rg
+      - traefik.http.services.gl-rg.loadbalancer.server.port=5000
+  redis:
+    image: redis:7
+  postgresql:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=gitlab
+      - POSTGRES_PASSWORD=ief6baehohQu
+      - POSTGRES_DB=gitlab_prod
+    volumes:
+      - pgdata:/var/lib/postgresql
+  exim:
+    build: exim/
+    environment:
+      - RELAY_FROM=gitlab-gitlab-1.gitlab_default
+volumes:
+  config:
+  logs:
+  data:
+  pgdata:
+
+networks:
+  web:
+    external: true
+

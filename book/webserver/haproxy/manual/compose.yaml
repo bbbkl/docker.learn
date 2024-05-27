@@ -1,0 +1,10 @@
+services:
+  haproxy:
+    build: .
+    image: docbuc/haproxy
+    ports:
+      - 8080:80
+  nginx:
+    image: docbuc/nginx
+  apache:
+    image: docbuc/apache

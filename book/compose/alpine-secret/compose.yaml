@@ -1,0 +1,12 @@
+# note: does not work with podman-compose (tested with Podman 4.5, podman-compose 1.0.6)
+
+services:
+  secrettest:
+    image: alpine
+    secrets:
+      - mypassword
+    command: ["cat", "/run/secrets/mypassword"]
+
+secrets:
+  mypassword:
+    file: ./top-secret.txt

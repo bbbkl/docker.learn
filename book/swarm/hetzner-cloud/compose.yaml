@@ -1,0 +1,55 @@
+services:
+  mongo1:
+    image: mongo:5
+    command: --replSet "rs0"
+    volumes:
+      - mongovol1:/data/db
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+  mongo2:
+    image: mongo:5
+    command: --replSet "rs0"
+    volumes:
+      - mongovol2:/data/db
+    deploy:
+      placement:
+        constraints: [node.hostname == worker1]
+  mongo3:
+    image: mongo:5
+    command: --replSet "rs0"
+    volumes:
+      - mongovol3:/data/db
+    deploy:
+      placement:
+        constraints: [node.hostname == worker2]
+  api:
+    restart: always
+    build: api
+    image: docbuc/mwa-api
+    environment:
+      # - MONGO_URL=mongodb://mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=rs0
+      - MONGO_URL=mongodb://mongo1:27017/
+    depends_on:
+      - mongo1
+    ports:
+      - 3000:3000
+  redis:
+    image: redis:7-alpine
+  frontend:
+    restart: always
+    build: frontend
+    image: docbuc/mwa-fe
+    depends_on:
+      - api
+    ports:
+      - 8080:8080
+      - 80:80
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+volumes:
+  mongovol1:
+  mongovol2:
+  mongovol3:
+

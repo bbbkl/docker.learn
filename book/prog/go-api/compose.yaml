@@ -1,0 +1,14 @@
+services:
+  api:
+    build:
+      context: .
+      target: dev
+    ports:
+      - "8000:8000"
+      - "2345:2345"
+    environment:
+      GO_SESSION_KEY: ohphoo1soChuon3veebie9ae
+    volumes:
+      - ./:/app
+  redis:
+    image: redis

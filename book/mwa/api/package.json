@@ -1,0 +1,31 @@
+{
+  "name": "webapi",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "devStart": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-redis": "^7.1.0",
+    "cors": "^2.8.5",
+    "debug": "^4.3.4",
+    "exif-parser": "^0.1.12",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "express-validator": "^7.0.1",
+    "jimp": "^0.22.8",
+    "moment": "^2.29.4",
+    "mongodb": "^5.7.0",
+    "multer": "^1.4.5-lts.1",
+    "redis": "^4.6.7"
+  }
+}

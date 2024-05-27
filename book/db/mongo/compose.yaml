@@ -1,0 +1,13 @@
+services:
+  db:
+    image: mongo:5
+    volumes:
+      - mongo:/data/db
+      - ./init:/docker-entrypoint-initdb.d
+      - ./queries:/queries
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_DATABASE: geonames
+volumes:
+  mongo:

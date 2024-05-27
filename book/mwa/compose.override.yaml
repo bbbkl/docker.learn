@@ -1,0 +1,21 @@
+services:
+  api:
+    image: docbuc/mwa-api-dev:latest
+    build:
+      context: api/
+      target: dev
+    environment:
+      - DEBUG=api
+    volumes:
+      - ./api:/src
+  frontend:
+    build:
+      context: frontend
+      target: builder
+    image: docbuc/mwa-fe-build:latest
+    environment:
+      - API_BASE=/api
+    volumes:
+      - ./frontend/vue-project:/src/vue
+    ports:
+      - 8080:5173

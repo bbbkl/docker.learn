@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend-ingress
+  annotations:
+    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.allow-http: "true"
+    kubernetes.io/ingress.global-static-ip-name: web-ip
+    cert-manager.io/issuer: letsencrypt-staging
+spec:
+  tls:
+    - secretName: web-ssl
+      hosts:
+        - k8s-diary.dockerbuch.info
+  defaultBackend:
+    service:
+      name: frontend
+      port:
+        number: 80

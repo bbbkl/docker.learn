@@ -1,0 +1,14 @@
+# run container with current UID/GID; use
+# 
+# UID_GID="$(id -u):$(id -g)" docker compose up
+# 
+# to run docker compose; 
+# incompatible to Podman (-> touch produces permission denied 
+# error, even if the current user IS 1000:1000)
+services:
+  secrettest:
+    image: alpine
+    volumes:
+      - ./:/home
+    command: ["touch", "/home/newfile"]
+    user: ${UID_GID}

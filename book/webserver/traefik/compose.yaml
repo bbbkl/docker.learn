@@ -1,0 +1,18 @@
+services:
+  traefik:
+    restart: unless-stopped
+    image: traefik:v2.10
+    networks:
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/traefik.yml
+      - ./traefik_api.yml:/traefik_api.yml
+      - ./acme:/acme
+networks:
+  web:
+    external: true
+
